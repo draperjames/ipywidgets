@@ -6,6 +6,7 @@ from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 
 from .trait_types import Color, Datetime
+from .trait_types import eventful, spectate
 
 from .widget_core import CoreWidget
 from .widget_bool import Checkbox, ToggleButton, Valid

@@ -12,12 +12,17 @@ from ipywidgets import Color
 from ipywidgets.widgets.widget import _remove_buffers, _put_buffers
 from ipywidgets.widgets.trait_types import date_serialization
 
+from ..trait_types.tests.test_eventful import CopyClass
+from .. import trait_types as tts
+
 
 class ColorTrait(HasTraits):
+
     value = Color("black")
 
 
 class TestColor(TraitTestBase):
+
     obj = ColorTrait()
 
     _good_values = ["blue", "#AA0", "#FFFFFF"]
@@ -66,6 +71,7 @@ class TestDateDeserialization(TestCase):
 
 
 class TestBuffers(TestCase):
+
     def test_remove_and_put_buffers(self):
         mv1 =  memoryview(b'test1')
         mv2 =  memoryview(b'test2')
@@ -114,3 +120,57 @@ class TestBuffers(TestCase):
         # we know that tuples get converted to list, so help the comparison by changing the tuple to a list
         state_before['z'] = list(state_before['z'])
         self.assertEqual(state_before, state)
+
+
+class TestEventfulTraits(TestCase):
+
+    def test_eventful_elements(self):
+
+        class Itemized(CopyClass):
+
+            def __init__(self, old=None):
+                self._items = {}
+
+            def __setitem__(self, name, value):
+                self._items[name] = value
+
+            def __delitem__(self, name):
+                del self._items[name]
+
+            def __getitem__(self, name):
+                return self._items[name]
+
+        class EventfulItemized(tts.EventfulElements):
+
+            klass = Itemized
+            type_name = "EventfulItemized"
+
+        class HasEventfuls(HasTraits):
+
+            setitem_called = False
+            delitem_called = False
+
+            eitems = EventfulItemized()
+
+        he = HasEventfuls()
+        he.eitems = Itemized()
+
+        sets = []
+        dels = []
+
+        def setitem_observer(event):
+            sets.append(event)
+        
+        def delitem_observer(event):
+            dels.append(event)
+
+        he.observe(setitem_observer, "eitems", type="setitem")
+        he.observe(delitem_observer, "eitems", type="delitem")
+
+        he.eitems["a"] = 1
+        he.eitems["a"] = 2
+        del he.eitems["a"]
+
+        assert len(sets) == 2
+        assert ... # other stuff
+
