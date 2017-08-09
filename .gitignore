@@ -28,3 +28,5 @@ index.built.js.map
 
 **/built
 **/lib/
+
+package-lock.json
