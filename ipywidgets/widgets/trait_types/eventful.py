@@ -186,7 +186,8 @@ class Eventful(TraitType):
             on `klass`.
         """
         super(Eventful, self).__init__(*args, **kwargs)
-        default_value = self.default()
+        # default_value = self.default()
+        default_value = self.default_value
         if self.klass is None and default_value is not Undefined:
             self.klass = type(default_value)
         self._active_events = []
