@@ -160,7 +160,7 @@ _number_format_types = {
 }
 
 
-class NumberFormat(traitlets.Unicode):
+class NumberFormat(Unicode):
     """A string holding a number format specifier, e.g. '.3f'
 
     This traitlet holds a string that can be passed to the
@@ -169,7 +169,7 @@ class NumberFormat(traitlets.Unicode):
     """
 
     info_text = 'a valid number format'
-    default_value = traitlets.Undefined
+    default_value = Undefined
 
     def validate(self, obj, value):
         value = super(NumberFormat, self).validate(obj, value)
@@ -183,7 +183,7 @@ class NumberFormat(traitlets.Unicode):
             elif format_type in _number_format_types:
                 return value
             else:
-                raise traitlets.TraitError(
+                raise TraitError(
                     'The type specifier of a NumberFormat trait must '
                     'be one of {}, but a value of \'{}\' was '
                     'specified.'.format(
