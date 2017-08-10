@@ -127,7 +127,8 @@ import six
 import types
 import inspect
 # from traitlets.utils.bunch import FrozenBunch as Bunch
-from .traitlets_patch import FrozenBunch as Bunch
+# from .traitlets_patch import FrozenBunch as Bunch
+from spectate import Bunch
 
 
 def getargspec(func):

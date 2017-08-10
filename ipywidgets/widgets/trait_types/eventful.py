@@ -1,7 +1,8 @@
 from .spectate import watch, unwatch, has_watcher, watcher, expose_as, watchable, Spectator
 from traitlets import TraitType, Undefined
 # from traitlets.utils.bunch import FrozenBunch as Bunch
-from .traitlets_patch import FrozenBunch as Bunch
+# from .traitlets_patch import FrozenBunch as Bunch
+from spectate import Bunch
 from contextlib import contextmanager
 
 

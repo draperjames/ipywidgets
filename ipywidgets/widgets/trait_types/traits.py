@@ -11,7 +11,8 @@ import re
 import datetime as dt
 from .eventful import Eventful
 from .traitlets_patch import FrozenBunch as Bunch
-from traitlets import (Undefined, Dict, Instance, Unicode, TraitType, List,)
+from traitlets import (Undefined, Dict, Instance, Unicode, TraitType, List,
+                       TraitError)
 
 
 _color_names = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred ', 'indigo ', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
@@ -92,39 +93,6 @@ def datetime_from_json(js, manager):
 datetime_serialization = {
     'from_json': datetime_from_json,
     'to_json': datetime_to_json
-}
-
-
-def date_to_json(pydate, manager):
-    """Serialize a Python date object.
-
-    Attributes of this dictionary are to be passed to the JavaScript Date
-    constructor.
-    """
-    if pydate is None:
-        return None
-    else:
-        return dict(
-            year=pydate.year,
-            month=pydate.month - 1,  # Months are 0-based indices in JS
-            date=pydate.day
-        )
-
-
-def date_from_json(js, manager):
-    """Deserialize a Javascript date."""
-    if js is None:
-        return None
-    else:
-        return dt.date(
-            js['year'],
-            js['month'] + 1,  # Months are 1-based in Python
-            js['date'],
-        )
-
-date_serialization = {
-    'from_json': date_from_json,
-    'to_json': date_to_json
 }
 
 
