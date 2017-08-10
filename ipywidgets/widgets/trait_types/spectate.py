@@ -10,7 +10,7 @@ Instalation
 ``spectate`` can be installed from GitHub using ``pip``:
 
 .. code:: text
-    
+
     $ pip install git+https://github.com/rmorshea/spectate.git#egg=spectate
 
 Basic Usage
@@ -126,7 +126,8 @@ import re
 import six
 import types
 import inspect
-from traitlets.utils.bunch import FrozenBunch as Bunch
+# from traitlets.utils.bunch import FrozenBunch as Bunch
+from .traitlets_patch import FrozenBunch as Bunch
 
 
 def getargspec(func):
@@ -172,7 +173,7 @@ class Spectator(object):
             method must have an associated :class:`MethodSpectator`
             descriptor associated with it.
         before : callable
-            A callback that will be called before the base method. Its 
+            A callback that will be called before the base method. Its
             signature should be ``(value, call)`` where ``value`` is the
             value whose methods are being watched, and ``call`` is data
             about a call which was made to one of them.
@@ -198,7 +199,7 @@ class Spectator(object):
                     + ``kwargs``: the keyword arguments the method was called with.
 
             + Can ``return`` a value which gets passed on to its respective afterback.
-        
+
         + **Afterbacks**: a callback triggered after the base method.
 
             + Signature: ``(new, answer)``
@@ -325,7 +326,7 @@ class MethodSpectator(object):
         aspec = getargspec(self.basemethod)
         self.defaults = aspec.defaults
         self.code, self.defaults = self._code(aspec)
-    
+
     @property
     def basemethod(self):
         return getattr(self.base, self.name)
@@ -404,7 +405,7 @@ class WatchableType(object):
 
 def expose_as(name, base, *methods):
     """Create a named :class:`WatchableType` with :class:`MethodSpectators`.
-    
+
     See :func:`expose` for more info.
     """
     return expose(base, *methods, name=name)
@@ -412,7 +413,7 @@ def expose_as(name, base, *methods):
 
 def expose(base, *methods, **kwargs):
     """Create a :class:`WatchableType` with :class:`MethodSpectators`.
-    
+
     Parameters
     ----------
     base : type

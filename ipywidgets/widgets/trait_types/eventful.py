@@ -1,6 +1,7 @@
 from .spectate import watch, unwatch, has_watcher, watcher, expose_as, watchable, Spectator
 from traitlets import TraitType, Undefined
-from traitlets.utils.bunch import FrozenBunch as Bunch
+# from traitlets.utils.bunch import FrozenBunch as Bunch
+from .traitlets_patch import FrozenBunch as Bunch
 from contextlib import contextmanager
 
 
@@ -90,7 +91,7 @@ class Beforeback(Callback):
                     Bunch(name=self.trait.name, event=event,
                         type=self.etype, owner=self.owner))
             return event
-            
+
 
 
 class Afterback(Callback):
@@ -205,7 +206,7 @@ class Eventful(TraitType):
         methods : str or list of str
             The method(s) this event should be triggered on.
         before : callable
-            A beforeback that will be called before the base method. Its 
+            A beforeback that will be called before the base method. Its
             signature should be ``(value, call)`` where ``value`` is the
             value whose methods are being watched, and ``call`` is data
             about a call which was made to one of them.
@@ -226,7 +227,7 @@ class Eventful(TraitType):
 
         + Beforebacks - a callback triggered before a given method.
         + Afterbacks - a callback triggered after a given method.
-        
+
         Beforebacks and afterbacks are stored in pairs which intercommunicate
         so that the state of an object before a mutative method is called, can
         be compared to its state afterwards. These pairs can be defined in one
@@ -261,7 +262,7 @@ class Eventful(TraitType):
                     + ``returned`` is the direct output of the called method.
                     + Just like a distinct afterback, it can return ``None`` to prevent notifications,
                     or a value which gets distributed to event observers under ``report['event']``.
-        
+
         + **Afterbacks**
 
             + Signature: ``(new, answer)``
@@ -385,7 +386,7 @@ class Eventful(TraitType):
         by a user of the given value. However, instead of notifying each time
         a call is made, the events therin are captured and repackaged as one
         list of events which is sent to the trait's owner.
-        
+
         Parameters
         ----------
         value : any
@@ -399,7 +400,7 @@ class Eventful(TraitType):
             to the the event being "abstracted". This means there will be many
             small notifications plus the larger repackaged one.
         single : bool
-            If ``True`` then 
+            If ``True`` then
 
         Examples
         --------
@@ -407,7 +408,7 @@ class Eventful(TraitType):
         .. code-block:: python
 
             class EventfulValue(Eventful):
-                
+
                 klass = list
                 event_map = dict(extend="extend", append="append")
 
@@ -475,7 +476,7 @@ class Eventful(TraitType):
 @contextmanager
 def abstracted(method, beforeback=None, afterback=None):
     """Create a closure that captures and repackages an event.
-    
+
     Yields a closure which captures event calls. Upon exiting the
     context the given beforeback is called with those arguments,
     and it's results are captured. If the closure is returned as
@@ -490,7 +491,7 @@ def abstracted(method, beforeback=None, afterback=None):
     beforeback : callable
         The beforeback associated with defining an event's data for the given method.
     afterback : callable
-        The afterback associate with defining an event's data for the given method. 
+        The afterback associate with defining an event's data for the given method.
     """
     before = redirect(method, beforeback, afterback)
 
@@ -511,7 +512,7 @@ def abstracted(method, beforeback=None, afterback=None):
 
 def redirect(method, before=None, after=None):
     """Creates a Type II event definition from a Type I definition.
-    
+
     + `Type I` : A seperate beforeback and afterback pair.
     + `Type II` : An afterback closure defined in and returned by a beforeback.
 
