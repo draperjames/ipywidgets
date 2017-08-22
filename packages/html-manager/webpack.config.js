@@ -1,22 +1,24 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-let version = require('./package.json').version;
+// Here we generate the /dist files that allow widget embedding
 
-let postcss = require('postcss');
+var version = require('./package.json').version;
 
-let postcssHandler = () => {
+var postcss = require('postcss');
+
+var postcssHandler = function() {
     return [
-        postcss.plugin('delete-tilde', () => {
+        postcss.plugin('delete-tilde', function() {
             return function (css) {
-                css.walkAtRules('import', (rule) => {
+                css.walkAtRules('import', function(rule) {
                     rule.params = rule.params.replace('~', '');
                 });
             };
         }),
-        postcss.plugin('prepend', () => {
-            return (css) => {
-                css.prepend(`@import '@jupyter-widgets/controls/css/labvariables.css';`)
+        postcss.plugin('prepend', function() {
+            return function(css) {
+                css.prepend("@import '@jupyter-widgets/controls/css/labvariables.css';")
             }
         }),
         require('postcss-import')(),
@@ -24,7 +26,7 @@ let postcssHandler = () => {
     ];
 }
 
-let loaders = [
+var loaders = [
             { test: /\.css$/, loader: "style-loader!css-loader!postcss-loader" },
             { test: /\.json$/, loader: "json-loader" },
             // jquery-ui loads some images
@@ -35,13 +37,13 @@ let loaders = [
             { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
-        ]
+        ];
 
-let publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
+var publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
-{// shim
-    entry: './lib/embed-webpack.js',
+{// script that renders widgets using the standard embedding and can only render standard controls
+    entry: './lib/embed.js',
     output: {
         filename : 'embed.js',
         path: './dist',
@@ -49,7 +51,32 @@ module.exports = [
     },
     devtool: 'source-map',
     module: { loaders: loaders },
+    postcss: postcssHandler
+},
+{// script that renders widgets using the amd embedding and can render third-party custom widgets
+    entry: './lib/embed-amd.js',
+    output: {
+        filename : 'embed-amd.js',
+        path: './dist',
+        publicPath: publicPath,
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
+    postcss: postcssHandler
+},
+{// embed library that depends on requirejs, and can load third-party widgets dynamically
+    entry: './lib/libembed-amd.js',
+    output: {
+        library: '@jupyter-widgets/html-manager/dist/libembed-amd',
+        filename : 'libembed-amd.js',
+        path: './dist',
+        publicPath: publicPath,
+        libraryTarget: 'amd'
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
     postcss: postcssHandler,
+    externals: ['./base', './controls', './index']
 },
 {// @jupyter-widgets/html-manager
     entry: './lib/index.js',

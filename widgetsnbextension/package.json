@@ -1,13 +1,14 @@
 {
   "name": "@jupyter-widgets/notebook-manager",
-  "version": "3.0.0-beta.10",
+  "version": "3.0.0-beta.16",
   "description": "Jupyter Widgets nbextension",
   "main": "src/extension.js",
   "private": true,
   "scripts": {
+    "clean": "rimraf widgetsnbextension/static",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run clean && webpack",
-    "clean": "rimraf widgetsnbextension/static"
+    "prepublish": "npm run clean && npm run build"
   },
   "repository": {
     "type": "git",
@@ -20,9 +21,10 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
-    "@jupyter-widgets/base": "^0.6.8",
-    "@jupyter-widgets/controls": "^0.6.14",
-    "@jupyter-widgets/output": "^0.3.8",
+    "@jupyter-widgets/base": "^0.6.11",
+    "@jupyter-widgets/controls": "^0.6.17",
+    "@jupyter-widgets/html-manager": "^0.8.2",
+    "@jupyter-widgets/output": "^0.3.11",
     "@phosphor/messaging": "^1.2.0",
     "@phosphor/widgets": "^1.2.0",
     "backbone": "1.2.3",

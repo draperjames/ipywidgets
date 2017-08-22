@@ -9,7 +9,7 @@ reflects the current state of the source repository. To use the latest release
 of the HTML wiget manager in your own project, copy the `index.html` file and
 replace
 
-`<script src="built/index.built.js"></script>`
+`<script src="./built/index.built.js"></script>`
 
 with
 
@@ -18,7 +18,7 @@ with
 If you need a specific version of the HTML widget manager, you can include a
 semver range. For example:
 
-`<script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.6.0/dist/embed.js"></script>`
+`<script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.8.0/dist/embed.js"></script>`
 
 ## Try it
 
