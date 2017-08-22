@@ -26,7 +26,12 @@ var PhosphorWidget = require("@phosphor/widgets");
 var handle_kernel = function(Jupyter, kernel) {
     if (kernel.comm_manager && kernel.widget_manager === undefined) {
 
-        // Create a widget manager instance. Use the global
+        // Clear any old widget manager
+        if (Jupyter.WidgetManager) {
+            Jupyter.WidgetManager._managers[0].clear_state();
+        }
+
+        // Create a new widget manager instance. Use the global
         // Jupyter.notebook handle.
         var manager = new mngr.WidgetManager(kernel.comm_manager, Jupyter.notebook);
 
@@ -48,6 +53,14 @@ function register_events(Jupyter, events, outputarea) {
     // When the kernel is created, create a widget manager.
     events.on('kernel_created.Kernel kernel_created.Session', function(event, data) {
         handle_kernel(Jupyter, data.kernel);
+    });
+
+    // When a kernel dies, disconnect the widgets.
+    events.on('kernel_killed.Session kernel_killed.Kernel kernel_restarting.Kernel', function(event, data) {
+        var kernel = data.kernel;
+        if (kernel && kernel.widget_manager) {
+            kernel.widget_manager.disconnect();
+        }
     });
 
     /**
@@ -89,9 +102,9 @@ function register_events(Jupyter, events, outputarea) {
      */
     function render(output, data, node) {
         // data is a model id
-        var manager = Jupyter.notebook.kernel.widget_manager;
-        if (!manager) {
-            node.textContent = "Missing widget manager";
+        var manager = Jupyter.notebook && Jupyter.notebook.kernel && Jupyter.notebook.kernel.widget_manager;
+        if (manager === undefined) {
+            node.textContent = "Error rendering Jupyter widget: missing widget manager";
             return;
         }
 
@@ -107,7 +120,7 @@ function register_events(Jupyter, events, outputarea) {
                 PhosphorWidget.Widget.attach(view.pWidget, node);
             });
         } else {
-            node.textContent = "Widget not found: "+JSON.stringify(data);
+            node.textContent = "Error rendering Jupyter widget. Widget not found: "+JSON.stringify(data);
         }
     }
 

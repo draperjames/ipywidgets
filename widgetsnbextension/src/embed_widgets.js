@@ -8,10 +8,13 @@ var VIEW_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
 var htmlManagerVersion = require("@jupyter-widgets/html-manager/package.json").version;
 
 var embed_widgets = function() {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
         requirejs(['base/js/namespace', 'base/js/dialog', '@jupyter-widgets/controls'], function(Jupyter, dialog, widgets) {
-
-            Jupyter.WidgetManager._managers[0].get_state({
+            var wm = Jupyter.WidgetManager._managers[0];
+            if (!wm) {
+                reject('No widget manager');
+            }
+            wm.get_state({
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
@@ -21,15 +24,7 @@ var embed_widgets = function() {
 '',
 '<!-- Load require.js. Delete this if your page already loads require.js -->',
 '<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>',
-'<script>',
-'    window.require(["https://unpkg.com/@jupyter-widgets/html-manager@^'+htmlManagerVersion+'/dist/embed-requirejs"], function(embed) {',
-'        if (document.readyState === "complete") {',
-'            embed.renderWidgets();',
-'        } else {',
-'            window.addEventListener("load", function() {embed.renderWidgets();});',
-'        }',
-'    });',
-'</script>',
+'<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>',
 '<script type="application/vnd.jupyter.widget-state+json">',
 data,
 '</script>',

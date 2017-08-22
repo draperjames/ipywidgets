@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/base",
-  "version": "0.6.11",
+  "version": "1.0.0",
   "description": "Jupyter interactive widgets",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -51,10 +51,10 @@
     "sinon": "^2.1.0",
     "sinon-chai": "^2.11.0",
     "typescript": "~2.4.1",
-    "webpack": "^1.12.12"
+    "webpack": "^3.5.5"
   },
   "dependencies": {
-    "@jupyter-widgets/schema": "^0.3.0-beta.7",
+    "@jupyter-widgets/schema": "^0.3.0",
     "@jupyterlab/services": "^0.48.0",
     "@phosphor/algorithm": "^1.1.0",
     "@phosphor/domutils": "^1.1.0",
@@ -65,7 +65,7 @@
     "@types/semver": "^5.3.30",
     "backbone": "1.2.3",
     "jquery": "^3.1.1",
-    "semver": "^5.1.0",
-    "underscore": "^1.8.3"
+    "lodash": "^4.17.4",
+    "semver": "^5.1.0"
   }
 }

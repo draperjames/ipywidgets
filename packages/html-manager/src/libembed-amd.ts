@@ -3,13 +3,6 @@
 
 import * as libembed from './libembed';
 
-// Populate the requirejs cache with local versions of @jupyter-widgets/base,
-// @jupyter-widgets/controls, @jupyter-widgets/html-manager. These are externals
-// when compiled with webpack.
-require('./base');
-require('./controls');
-require('./index');
-
 /**
  * Load a package using requirejs and return a promise
  *
@@ -27,7 +20,7 @@ let requirePromise = function(pkg: string | string[]): Promise<any> {
 }
 
 function requireLoader(moduleName: string, moduleVersion: string) {
-    return requirePromise([`${moduleName}.js`]).catch((err) => {
+    return requirePromise([`${moduleName}`]).catch((err) => {
         let failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
             console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
